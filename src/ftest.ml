@@ -33,7 +33,8 @@ let () =
   let graph3 = gmap graph2 (fun a -> string_of_int a) in
 
   (* Rewrite the graph that has been read. *)
-  let () = write_file outfile graph3 in
+  (*let () = write_file outfile graph3*)
+  let () = export graph3 outfile in
 
   ()
 
