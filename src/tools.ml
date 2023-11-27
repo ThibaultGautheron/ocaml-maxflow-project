@@ -9,3 +9,5 @@ let add_arc graph id1 id2 i =
   |None -> new_arc graph {src = id1; tgt = id2; lbl = i}
   |Some x -> new_arc graph {src = id1; tgt = id2; lbl = x.lbl+i}
 ;;
+
+let diff_graph graph1 graph2

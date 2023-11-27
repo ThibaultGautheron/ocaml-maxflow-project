@@ -18,7 +18,7 @@ type path = string
 
 (* Compute arbitrary position for a node. Center is 300,300 *)
 let iof = int_of_float
-(*let soi = string_of_int*)
+
 let foi = float_of_int
 
 let index_i id = iof (sqrt (foi id *. 1.1))
@@ -31,14 +31,6 @@ let compute_y id =
   let sgn = if delta mod 2 = 0 then -1 else 1 in
 
   300 + sgn * (delta / 2) * 100
-
-(*let f (acu: 'a arc list) (arc: 'a arc) = List.append [arc] acu
-
-let export_add_line (s: string) (a: 'a arc) = s ^ soi a.src ^ "->" ^ soi a.tgt ^ "[label = " ^ a.lbl ^ "];\n"
-
-let rec export_acu (s_acu: string) (arc_list: 'a arc list) = match arc_list with
-  |[] -> s_acu
-  |a :: b -> export_acu (export_add_line s_acu a) b*)
 
 let export gr path =
   let ff = open_out path in
