@@ -3,6 +3,15 @@ open Tools
 open Gfile
 
 
+let dfs idSource idDest graph =
+  let rec loop listeArcs listeChemin = match listeArcs with
+    |[] -> []
+    |x::rest -> if x.tgt = idDest then x::listeChemin else match loop (out_arcs graph x) (x::listeChemin) with
+      |[] -> loop rest []
+      |y::rest -> y::listeChemin  
+  in loop (out_arcs graph idSource ) []
+;;
+
 let min_flow path = 
   let rec loop path2 acu = 
     match path2 with
