@@ -3,41 +3,28 @@ open Tools
 open Gfile
 
 
-
-let dfs_start s t graph = 
-  let rec loop acu =
-    match out_arcs graph s with
-    |[] -> acu 
-    |x::rest -> check_neighbors s t graph
-;;
-
-let check_neighbors current_node goal graph = if (find (fun x -> x = goal) (out_arcs graph current_node)) = Not_found then None else Some x
-
-;;
-
 let min_flow path = 
   let rec loop path2 acu = 
     match path2 with
     |[] -> acu
-    |x::rest -> if (x.lbl > acu.lbl) then loop rest x else loop rest acu in
-    loop path (List.hd path)
+    |x::rest -> if (x.lbl < acu) then loop rest x.lbl else loop rest acu in
+    loop path 0
 ;;
 
 let flots s t base_graph =
-  let init_graph = gmap base_graph (fun a -> string_of_int 0) in 
+  let init_graph = gmap base_graph (fun a ->  0) in 
 
   let rec while_loop graph graph2 =
     
-    let path_dfs = dfs_start s t graph2 in
+    let path_dfs = dfs s t graph2 in
     match path_dfs with
     |[] -> graph
-    |x::_ -> let min = min_flow path_dfs in
+    |x -> let min = min_flow path_dfs in
 
       let rec for_loop path acu graph2= 
         match path with
         |[] -> while_loop acu graph2
-        |x::rest -> for_loop rest (gmap (add_arc (gmap (acu) (fun a -> int_of_string a)) x.src x.tgt min) (fun a -> string_of_int a)) 
-        (gmap (add_arc (gmap (graph2) (fun a -> int_of_string a)) x.src x.tgt (-min)) (fun a -> string_of_int a))
+        |x::rest -> for_loop rest (add_arc acu x.src x.tgt min) (add_arc graph2 x.src x.tgt (-min))
 
 
       in for_loop path_dfs graph graph2
