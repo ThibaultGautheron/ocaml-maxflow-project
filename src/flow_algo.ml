@@ -1,18 +1,28 @@
 open Graph
-open Tools
-open Gfile
+open Printf
 
+
+let write_list (list:int arc list) =
+
+  
+  (* Write in this file. *)
+  printf  "%% This is a list.\n\n" ;
+  let rec loop (list:int arc list) = match list with
+    |[] -> printf  "\n%!"
+    |arc::rest -> printf  " %d -> %d (%d) " arc.src arc.tgt arc.lbl; loop rest 
+  in loop list;   
+;;
 
 let dfs idSource idDest graph =
   let rec loop listeArcs listeChemin = match listeArcs with
     |[] -> []
-    |x::rest -> if x.tgt = idDest then x::listeChemin else match loop (out_arcs graph x) (x::listeChemin) with
-      |[] -> loop rest []
-      |y::rest -> y::listeChemin  
+    |x::rest -> if x.tgt = idDest then x::listeChemin else match loop (out_arcs graph x.tgt) (x::listeChemin) with
+      |[] -> loop rest (listeChemin)
+      |y -> y
   in loop (out_arcs graph idSource ) []
 ;;
 
-let min_flow path = 
+(*let min_flow path = 
   let rec loop path2 acu = 
     match path2 with
     |[] -> acu
@@ -21,14 +31,14 @@ let min_flow path =
 ;;
 
 let flots s t base_graph =
-  let init_graph = gmap base_graph (fun a ->  0) in 
+  let init_graph = gmap base_graph (fun _ ->  0) in 
 
   let rec while_loop graph graph2 =
     
     let path_dfs = dfs s t graph2 in
     match path_dfs with
     |[] -> graph
-    |x -> let min = min_flow path_dfs in
+    |_ -> let min = min_flow path_dfs in
 
       let rec for_loop path acu graph2= 
         match path with
@@ -39,7 +49,7 @@ let flots s t base_graph =
       in for_loop path_dfs graph graph2
     in while_loop init_graph init_graph
     
-;;
+;;*)
 
 (*
 s ← pick(v)
