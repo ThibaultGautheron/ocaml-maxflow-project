@@ -1,5 +1,6 @@
 open Graph
 open Printf
+open Tools
 
 
 let write_list (list:int arc list) =
@@ -13,43 +14,55 @@ let write_list (list:int arc list) =
   in loop list;   
 ;;
 
+
+let cleanup graph_D graph_F =
+  e_fold graph_D (fun g {src = id1; tgt = id2; lbl = i} -> let label = match (find_arc graph_F id1 id2) with
+  |Some myarc -> myarc.lbl
+  |None -> i
+in 
+  new_arc g {src = id1; tgt = id2; lbl = label}) (clone_nodes graph_D) ;;
+
 let dfs idSource idDest graph =
-  let rec loop listeArcs listeChemin = match listeArcs with
+  let rec loop acu_vus listeArcs listeChemin = match listeArcs with
     |[] -> []
-    |x::rest -> if x.tgt = idDest then x::listeChemin else match loop (out_arcs graph x.tgt) (x::listeChemin) with
-      |[] -> loop rest (listeChemin)
-      |y -> y
-  in loop (out_arcs graph idSource ) []
+    |y::rest -> if List.exists (fun a-> a=y) acu_vus then  loop acu_vus rest (listeChemin) else match y.lbl with
+      |0-> loop (y::acu_vus) rest (listeChemin)
+      |_-> if y.tgt = idDest then y::listeChemin else match loop (y::acu_vus) (out_arcs graph y.tgt) (y::listeChemin) with
+        |[] -> loop (y::acu_vus) rest (listeChemin)
+        |z -> z
+  in loop [] (out_arcs graph idSource ) []
 ;;
 
-(*let min_flow path = 
+let max_flow path = 
   let rec loop path2 acu = 
     match path2 with
     |[] -> acu
     |x::rest -> if (x.lbl < acu) then loop rest x.lbl else loop rest acu in
-    loop path 0
+    loop path Int.max_int
 ;;
 
-let flots s t base_graph =
-  let init_graph = gmap base_graph (fun _ ->  0) in 
-
-  let rec while_loop graph graph2 =
-    
-    let path_dfs = dfs s t graph2 in
-    match path_dfs with
+let augmentation_flow path graph m= 
+  let rec loop path graph m =
+    match path with
     |[] -> graph
-    |_ -> let min = min_flow path_dfs in
+    |x::rest -> loop rest (add_arc (add_arc  graph x.tgt x.src m ) x.src x.tgt (-m)) m
 
-      let rec for_loop path acu graph2= 
-        match path with
-        |[] -> while_loop acu graph2
-        |x::rest -> for_loop rest (add_arc acu x.src x.tgt min) (add_arc graph2 x.src x.tgt (-min))
-
-
-      in for_loop path_dfs graph graph2
-    in while_loop init_graph init_graph
+  in loop path graph m
+;;
+let flots s t base_graph =
+ 
+  let rec while_loop graph  =
     
-;;*)
+    let path_dfs = dfs s t graph in (*on choisit un chemin entre s et t*)
+    match (max_flow path_dfs) with (*pour chaque noeud du chemin*)
+    |x-> if (x = Int.max_int) then graph else let max = x in (*sinon, on recupere la valeur du flow min*)
+    
+    while_loop (augmentation_flow path_dfs graph max)
+      
+    in while_loop base_graph
+
+    
+;;
 
 (*
 s ← pick(v)
