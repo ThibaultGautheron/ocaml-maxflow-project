@@ -3,6 +3,7 @@
 src?=0
 dst?=5
 graph?=graph1.txt
+bigraph?=bi_graph3.txt
 
 all: build
 
@@ -17,9 +18,15 @@ format:
 edit:
 	code . -n
 
-demo: build
+ford: build
 	@echo "\n   ⚡  EXECUTING  ⚡\n"
-	./ftest.exe graphs/${graph} $(src) $(dst) outfile
+	./ftest.exe 0 graphs/${graph} $(src) $(dst) outfile
+	@echo "\n   🥁  RESULT (content of outfile)  🥁\n"
+	@cat outfile
+
+bipartite: build
+	@echo "\n   ⚡  EXECUTING  ⚡\n"
+	./ftest.exe 1 bi_graphs/${bigraph} 0 1 outfile
 	@echo "\n   🥁  RESULT (content of outfile)  🥁\n"
 	@cat outfile
 

@@ -4,8 +4,6 @@ open Tools
 
 
 let write_list (list:int arc list) =
-
-  
   (* Write in this file. *)
   printf  "%% This is a list.\n\n" ;
   let rec loop (list:int arc list) = match list with
@@ -59,36 +57,7 @@ let flots s t base_graph =
     
     while_loop (augmentation_flow path_dfs graph max)
       
-    in while_loop base_graph
+  in while_loop base_graph
 
-    
 ;;
 
-(*
-s ← pick(v)
-
-t ← pick(v)
-
-BEGIN
-
-(* Initializing the flow *)
-
-FOR { e  ∈ E } DO
-
-  f(e) ← 0
-
-(* Main Loop *)
-
-WHILE path might exist DO
-
-  path ← FIND_PATH(s,t)
-
-  augmentation ← min(e ∈ path)
-
-  FOR {e ∈ path}
-
-    flow(e) ← flow(e) + augmentation
-
-END
-
-*)

@@ -2,19 +2,10 @@ open Graph
 open Tools
 open Flow_algo
 
-(* 
-0)Creer graphe
-1) constituer K liste de tous les metiers, les mettre a droite, ajouter un arc au puit a droite -> Parc = 1
-   2) constiture N liste de tous les noms, les mettre a gauche, ajouter un arc a la source a gauche -> Parc = 1
-   3) si k dans la liste d une personne, ajouter un arc entre son nom et K -> Parc = 1
-*)
-
 
 type personne =
 { nom: id ;
   jobs: id list}
-
-
 
 let rec generateJobsList (plist : personne list) = match plist with
 | [] -> []
@@ -42,10 +33,6 @@ let rec generateArcfromName gr (p : personne ) = match p.jobs with
 let rec generateArcBetweenNodes gr (plist : personne list) = match plist with
 |[] -> gr
 |p::next -> generateArcBetweenNodes (generateArcfromName gr p) next
-
-(*let cleanupBi graphD graphF =
-  e_fold (cleanup graphD graphF) (fun g {src = id1; tgt = id2; lbl = i}-> if i=0 then new_arc g {src = id1; tgt = id2; lbl = 1} else g ) (clone_nodes graphD);;
-*)
 
 
 let cleanupBi graphD graphF =
